@@ -7,7 +7,7 @@ import { campaignsQuery } from "@/lib/queries";
 import { CATEGORY_LABELS, fundingMath } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/stories")({
+export const Route = createFileRoute("/stories/")({
   head: () => ({
     meta: [
       { title: "Stories to fund — Compassion Beyond Borders" },

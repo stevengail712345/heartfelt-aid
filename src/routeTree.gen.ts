@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransparencyRouteImport } from './routes/transparency'
 import { Route as TestimoniesRouteImport } from './routes/testimonies'
-import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StoriesIndexRouteImport } from './routes/stories.index'
 
 const TransparencyRoute = TransparencyRouteImport.update({
   id: '/transparency',
@@ -24,11 +24,6 @@ const TransparencyRoute = TransparencyRouteImport.update({
 const TestimoniesRoute = TestimoniesRouteImport.update({
   id: '/testimonies',
   path: '/testimonies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StoriesRoute = StoriesRouteImport.update({
-  id: '/stories',
-  path: '/stories',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -46,31 +41,36 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StoriesIndexRoute = StoriesIndexRouteImport.update({
+  id: '/stories/',
+  path: '/stories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/stories': typeof StoriesRoute
   '/testimonies': typeof TestimoniesRoute
   '/transparency': typeof TransparencyRoute
+  '/stories/': typeof StoriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/stories': typeof StoriesRoute
   '/testimonies': typeof TestimoniesRoute
   '/transparency': typeof TransparencyRoute
+  '/stories': typeof StoriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/stories': typeof StoriesRoute
   '/testimonies': typeof TestimoniesRoute
   '/transparency': typeof TransparencyRoute
+  '/stories/': typeof StoriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -78,34 +78,34 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
-    | '/stories'
     | '/testimonies'
     | '/transparency'
+    | '/stories/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/contact'
-    | '/stories'
     | '/testimonies'
     | '/transparency'
+    | '/stories'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
-    | '/stories'
     | '/testimonies'
     | '/transparency'
+    | '/stories/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
-  StoriesRoute: typeof StoriesRoute
   TestimoniesRoute: typeof TestimoniesRoute
   TransparencyRoute: typeof TransparencyRoute
+  StoriesIndexRoute: typeof StoriesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,13 +122,6 @@ declare module '@tanstack/react-router' {
       path: '/testimonies'
       fullPath: '/testimonies'
       preLoaderRoute: typeof TestimoniesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stories': {
-      id: '/stories'
-      path: '/stories'
-      fullPath: '/stories'
-      preLoaderRoute: typeof StoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -152,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stories/': {
+      id: '/stories/'
+      path: '/stories'
+      fullPath: '/stories/'
+      preLoaderRoute: typeof StoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -159,9 +159,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
-  StoriesRoute: StoriesRoute,
   TestimoniesRoute: TestimoniesRoute,
   TransparencyRoute: TransparencyRoute,
+  StoriesIndexRoute: StoriesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
