@@ -70,8 +70,7 @@ function Index() {
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-ink-foreground/80">
             We publish real stories in full — the person, the need, the amount already
-            raised, and the amount still missing. Every figure is in US dollars, and every
-            campaign closes when it is met.
+            raised, and the amount still missing. Every campaign closes when it is met.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
