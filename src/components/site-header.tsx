@@ -34,14 +34,9 @@ export function SiteHeader() {
           <span className="flex size-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Heart className="size-8 fill-current" aria-hidden />
           </span>
-          <span className="leading-tight">
-            <h1 className="block font-display text-5xl font-bold tracking-tight sm:text-6xl">
-              Compassion Beyond Borders
-            </h1>
-            <span className="block text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-              Foundation
-            </span>
-          </span>
+          <h1 className="block font-display text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
+            Compassion Beyond Borders <span className="text-primary">Foundation</span>
+          </h1>
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
