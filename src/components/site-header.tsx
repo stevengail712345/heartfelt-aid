@@ -29,13 +29,15 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-24 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-3.5" onClick={() => setOpen(false)}>
-          <span className="flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Heart className="size-7 fill-current" aria-hidden />
+      <div className="mx-auto flex h-32 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <Link to="/" className="flex items-center gap-4" onClick={() => setOpen(false)}>
+          <span className="flex size-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <Heart className="size-8 fill-current" aria-hidden />
           </span>
           <span className="leading-tight">
-            <span className="block font-display text-2xl">Compassion Beyond Borders</span>
+            <h1 className="block font-display text-5xl font-bold tracking-tight sm:text-6xl">
+              Compassion Beyond Borders
+            </h1>
             <span className="block text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
               Foundation
             </span>
