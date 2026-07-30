@@ -62,10 +62,13 @@ function Index() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-ink/40" />
         <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
-          <h1 className="max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-balance-tight sm:text-5xl md:text-6xl">
-            Somebody, somewhere, is short of the exact amount you can give.
+          <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
+            Compassion Beyond Borders Foundation
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-ink-foreground/80">
+          <p className="mt-5 max-w-3xl text-xl font-medium leading-snug text-ink-foreground/85">
+            Somebody, somewhere, is short of the exact amount you can give.
+          </p>
+          <p className="mt-4 max-w-2xl text-lg text-ink-foreground/80">
             We publish real stories in full — the person, the need, the amount already
             raised, and the amount still missing. Every campaign closes when it is met.
           </p>
