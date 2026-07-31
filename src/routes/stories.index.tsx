@@ -29,31 +29,32 @@ export const Route = createFileRoute("/stories/")({
   component: StoriesPage,
 });
 
-type Filter = "all" | "urgent" | "nearly" | "funded" | string;
+type Filter = "all" | "urgent" | "nearly" | string;
 
 function StoriesPage() {
   const { data: campaigns } = useSuspenseQuery(campaignsQuery);
   const [filter, setFilter] = useState<Filter>("all");
 
+  const open = campaigns.filter((c) => !fundingMath(c).isFullyFunded);
+  const funded = campaigns.filter((c) => fundingMath(c).isFullyFunded);
+
   const categories = useMemo(
-    () => Array.from(new Set(campaigns.map((c) => c.category))),
-    [campaigns],
+    () => Array.from(new Set(open.map((c) => c.category))),
+    [open],
   );
 
-  const filtered = campaigns.filter((c) => {
+  const filtered = open.filter((c) => {
     const m = fundingMath(c);
     if (filter === "all") return true;
-    if (filter === "urgent") return c.is_urgent && !m.isFullyFunded;
-    if (filter === "nearly") return !m.isFullyFunded && m.percent >= 60;
-    if (filter === "funded") return m.isFullyFunded;
+    if (filter === "urgent") return c.is_urgent;
+    if (filter === "nearly") return m.percent >= 60;
     return c.category === filter;
   });
 
   const chips: { value: Filter; label: string }[] = [
-    { value: "all", label: `All (${campaigns.length})` },
+    { value: "all", label: `All (${open.length})` },
     { value: "urgent", label: "Urgent" },
     { value: "nearly", label: "Almost complete" },
-    { value: "funded", label: "Fully funded" },
     ...categories.map((c) => ({ value: c, label: CATEGORY_LABELS[c] ?? c })),
   ];
 
@@ -66,7 +67,12 @@ function StoriesPage() {
       />
 
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter stories">
+        <h2 className="font-display text-3xl">Still need help</h2>
+        <p className="mt-1 text-muted-foreground">
+          Stories that are not yet complete — nothing raised so far, or part of the way there.
+        </p>
+
+        <div className="mt-6 flex flex-wrap gap-2" role="group" aria-label="Filter stories">
           {chips.map((chip) => (
             <button
               key={chip.value}
@@ -95,7 +101,22 @@ function StoriesPage() {
             ))}
           </div>
         )}
+
+        {funded.length > 0 && (
+          <section className="mt-20 border-t border-border pt-12">
+            <h2 className="font-display text-3xl">Fully funded ({funded.length})</h2>
+            <p className="mt-1 text-muted-foreground">
+              These needs are completely covered. Thank you to everyone who gave.
+            </p>
+            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {funded.map((c) => (
+                <CampaignCard key={c.id} campaign={c} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
+
     </PublicLayout>
   );
 }
