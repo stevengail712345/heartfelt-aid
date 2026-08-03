@@ -136,12 +136,28 @@ function AuthSync() {
   return null;
 }
 
+function TawkLiveChat() {
+  useEffect(() => {
+    if (document.getElementById("tawk-to-embed")) return;
+    const s1 = document.createElement("script");
+    s1.id = "tawk-to-embed";
+    s1.async = true;
+    s1.src = "https://embed.tawk.to/6a6fdba4afcef81d4990c95a/default";
+    s1.charset = "UTF-8";
+    s1.setAttribute("crossorigin", "*");
+    document.body.appendChild(s1);
+  }, []);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthSync />
+      <TawkLiveChat />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster richColors position="top-center" />
