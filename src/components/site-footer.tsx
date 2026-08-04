@@ -56,7 +56,6 @@ export function SiteFooter() {
           <h2 className="font-display text-base text-ink-foreground">Get in touch</h2>
           <ul className="mt-4 space-y-2.5 text-ink-foreground/70">
             <li>hello@compassionbeyondborders.org</li>
-            <li>+1 (555) 018-4402</li>
             <li>Mon–Fri, 9am–6pm UTC</li>
           </ul>
           <Link
