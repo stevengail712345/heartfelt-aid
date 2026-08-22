@@ -35,7 +35,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Prepare SPA Fallback and NoJekyll
+      - name: Configure Static Output
         run: |
           cp .output/public/index.html .output/public/404.html || true
           touch .output/public/.nojekyll
