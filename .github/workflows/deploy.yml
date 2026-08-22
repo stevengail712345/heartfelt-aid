@@ -35,6 +35,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Inspect Build Output
+        run: |
+          echo "=== Root Directory Content ==="
+          ls -la
+          echo "=== Output Folder Content ==="
+          ls -R .output || true
+          ls -R dist || true
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
