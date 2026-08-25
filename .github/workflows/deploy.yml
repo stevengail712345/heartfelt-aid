@@ -39,44 +39,42 @@ jobs:
           echo "--- package.json ---"
           cat package.json || true
 
-      - name: Install dependencies (detect Bun or npm)
+      - name: Install dependencies (use npm)
         run: |
           set -e
-          if [ -f bun.lock ]; then
-            echo "bun.lock detected — installing Bun and using bun install"
-            curl -fsSL https://bun.sh/install | bash
-            export PATH="$HOME/.bun/bin:$PATH"
-            bun --version
-            bun install
-          else
-            echo "No bun.lock — using npm install"
-            npm install --prefer-offline --no-audit --progress=false
-          fi
+          echo "Forcing npm install for CI reproducibility"
+          npm ci --prefer-offline --no-audit --progress=false || npm install --prefer-offline --no-audit --progress=false
 
-      - name: Debug: list node_modules / bun lock
+      - name: Debug: list node_modules
         run: |
           echo "node_modules exists:"; ls -la node_modules || true
-          echo "bun.lock exists:"; ls -la bun.lock || true
 
-      - name: Build (verbose)
+      - name: Build (verbose, disable prerender via env)
         run: |
           set -x
-          if command -v bun >/dev/null 2>&1; then
-            bun run build || npm run build
-          else
-            npm run build
-          fi
+          npm run build
         env:
           CI: true
+          PRERENDER: "false"
+          DISABLE_PRERENDER: "true"
+          NITRO_PRE_RENDER: "false"
+          TANSTACK_START_DISABLE_PRERENDER: "true"
 
-      - name: Capture build log
-        if: failure()
+      - name: Post-build: normalize output to dist
         run: |
-          echo "--- Build failed; capturing env and logs ---"
-          echo "Node:"; node -v || true
-          echo "NPM:"; npm -v || true
-          ls -la
-          find . -maxdepth 3 -type f -name "*.log" -print -exec sed -n '1,200p' {} \; || true
+          set -e
+          echo "Normalizing build output to ./dist for Pages upload"
+          if [ -d ".output/public" ]; then
+            echo ".output/public detected — copying to dist"
+            rm -rf dist
+            mkdir -p dist
+            cp -a .output/public/. dist/ || true
+          elif [ -d "dist" ]; then
+            echo "dist already exists — leaving as-is"
+          else
+            echo "No build output found (.output/public or dist)" && ls -la || true
+            exit 1
+          fi
 
       - name: Inspect build output
         run: |
