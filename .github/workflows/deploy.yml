@@ -29,6 +29,16 @@ jobs:
         with:
           node-version: 18
 
+      - name: Debug: environment info
+        run: |
+          echo "Runner: $RUNNER_OS"
+          node -v || true
+          npm -v || true
+          if command -v bun >/dev/null 2>&1; then bun --version || true; fi
+          ls -la
+          echo "--- package.json ---"
+          cat package.json || true
+
       - name: Install dependencies (detect Bun or npm)
         run: |
           set -e
@@ -40,17 +50,33 @@ jobs:
             bun install
           else
             echo "No bun.lock — using npm install"
-            npm install
+            npm install --prefer-offline --no-audit --progress=false
           fi
 
-      - name: Build
+      - name: Debug: list node_modules / bun lock
         run: |
-          # Try package.json build script first; if using bun, use bun run
+          echo "node_modules exists:"; ls -la node_modules || true
+          echo "bun.lock exists:"; ls -la bun.lock || true
+
+      - name: Build (verbose)
+        run: |
+          set -x
           if command -v bun >/dev/null 2>&1; then
             bun run build || npm run build
           else
             npm run build
           fi
+        env:
+          CI: true
+
+      - name: Capture build log
+        if: failure()
+        run: |
+          echo "--- Build failed; capturing env and logs ---"
+          echo "Node:"; node -v || true
+          echo "NPM:"; npm -v || true
+          ls -la
+          find . -maxdepth 3 -type f -name "*.log" -print -exec sed -n '1,200p' {} \; || true
 
       - name: Inspect build output
         run: |
