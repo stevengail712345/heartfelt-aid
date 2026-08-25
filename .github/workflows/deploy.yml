@@ -27,13 +27,37 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 18
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (detect Bun or npm)
+        run: |
+          set -e
+          if [ -f bun.lock ]; then
+            echo "bun.lock detected — installing Bun and using bun install"
+            curl -fsSL https://bun.sh/install | bash
+            export PATH="$HOME/.bun/bin:$PATH"
+            bun --version
+            bun install
+          else
+            echo "No bun.lock — using npm install"
+            npm install
+          fi
 
       - name: Build
-        run: npm run build
+        run: |
+          # Try package.json build script first; if using bun, use bun run
+          if command -v bun >/dev/null 2>&1; then
+            bun run build || npm run build
+          else
+            npm run build
+          fi
+
+      - name: Inspect build output
+        run: |
+          echo "Build directory listing:"
+          ls -la dist || true
+          echo "First lines of dist/index.html (if present):"
+          head -n 40 dist/index.html || true
 
       - name: Prepare SPA Routing Fallback
         run: |
