@@ -108,7 +108,9 @@ function ContactPage() {
           <h2 className="font-display text-2xl">Direct lines</h2>
           <p className="flex items-start gap-3 text-sm">
             <Mail className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-            hello@compassionbeyondborders.org
+            <a href="mailto:contact-us@compassionbeyondboarders.site" className="hover:text-primary hover:underline">
+              contact-us@compassionbeyondboarders.site
+            </a>
           </p>
           <p className="flex items-start gap-3 text-sm">
             <Phone className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
