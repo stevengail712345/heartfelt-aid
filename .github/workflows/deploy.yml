@@ -76,12 +76,31 @@ jobs:
             exit 1
           fi
 
+      - name: Post-build: copy server output and create server shim
+        run: |
+          set -e
+          if [ -d ".output/server" ]; then
+            echo ".output/server detected — copying server files to dist/server"
+            rm -rf dist/server
+            mkdir -p dist/server
+            cp -a .output/server/. dist/server/ || true
+            echo "Creating dist/server/server.js shim to satisfy preview plugin"
+            cat > dist/server/server.js <<'JS'
+import './index.mjs';
+export * from './index.mjs';
+JS
+          else
+            echo "No .output/server detected — skipping server copy"
+          fi
+
       - name: Inspect build output
         run: |
           echo "Build directory listing:"
           ls -la dist || true
           echo "First lines of dist/index.html (if present):"
           head -n 40 dist/index.html || true
+          echo "Server directory listing (if present):"
+          ls -la dist/server || true
 
       - name: Prepare SPA Routing Fallback
         run: |
