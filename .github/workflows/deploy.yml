@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -39,20 +41,38 @@ jobs:
           echo "--- package.json ---"
           cat package.json || true
 
-      - name: Install dependencies (use npm)
+      - name: Install dependencies (detect Bun or npm)
         run: |
           set -e
-          echo "Forcing npm install for CI reproducibility"
-          npm ci --prefer-offline --no-audit --progress=false || npm install --prefer-offline --no-audit --progress=false
+          # Prefer using bun when a bun.lock file is present
+          if [ -f bun.lock ]; then
+            echo "bun.lock detected — installing Bun and using bun install"
+            curl -fsSL https://bun.sh/install | bash
+            export PATH="$HOME/.bun/bin:$PATH"
+            bun --version || true
+            # bun install is typically much faster; fall back to npm if it fails
+            bun install || npm install --prefer-offline --no-audit --progress=false
+          else
+            echo "No bun.lock — using npm install"
+            npm ci --prefer-offline --no-audit --progress=false || npm install --prefer-offline --no-audit --progress=false
+          fi
 
       - name: Debug: list node_modules
         run: |
           echo "node_modules exists:"; ls -la node_modules || true
 
-      - name: Build (verbose, disable prerender via env)
+      - name: Build (detect Bun or npm, verbose)
         run: |
+          set -euo pipefail
           set -x
-          npm run build
+          # If bun is available, prefer bun run build, but fall back to npm
+          if command -v bun >/dev/null 2>&1; then
+            echo "Using bun to run build"
+            bun run build || { echo "bun build failed, trying npm"; npm run build; }
+          else
+            echo "Using npm to run build"
+            npm run build
+          fi
         env:
           CI: true
           PRERENDER: "false"
